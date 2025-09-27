@@ -13,8 +13,6 @@ find_package(Qt5 REQUIRED COMPONENTS Widgets Core)
 
 message(STATUS "OpenCV_INCLUDE_DIRS: ${OpenCV_INCLUDE_DIRS}")
 
-set(CMAKE_AUTOUIC OFF)
-
 add_executable(StereoMatchGUI
     main.cpp
     panel.cpp
