@@ -9,31 +9,36 @@ message(STATUS "Project Dir: ${PROJECT_SOURCE_DIR}")
 
 find_package(OpenCV REQUIRED)
 find_package(PCL REQUIRED)
-find_package(Qt6 REQUIRED COMPONENTS Widgets Core5Compat)
+find_package(Qt5 REQUIRED COMPONENTS Widgets Core)
 
 message(STATUS "OpenCV_INCLUDE_DIRS: ${OpenCV_INCLUDE_DIRS}")
 
 set(CMAKE_AUTOUIC OFF)
 
-qt_standard_project_setup()
-
-qt_add_executable(StereoMatchGUI
+add_executable(StereoMatchGUI
     main.cpp
     panel.cpp
-    AlgWidget.h
-    LoadWidget.h
+    AlgWidget.cpp
+    moc_panel.cpp
+    moc_AlgWidget.cpp
+    moc_LoadWidget.cpp
+    ui_panel.h
+    ui_bm.h
+    ui_sgbm.h
+    ui_loadfile.h
+    ui_loadlist.h
     ${CUSTOMLIB_DIR}/DirTools.cpp
     ${CUSTOMLIB_DIR}/VisualizationTools.cpp
     ${CUSTOMLIB_DIR}/StereoMatchingTools.cpp
     ${CUSTOMLIB_DIR}/OCV_PCL.cpp
     ${SRC_DIR}/algorithms.cpp
-    ${SRC_DIR}/fileIo.cpp)
+    ${SRC_DIR}/fileIO.cpp)
 
 target_link_libraries(StereoMatchGUI PRIVATE
     ${PCL_LIBRARIES}
     ${OpenCV_LIBRARIES}
-    Qt6::Widgets
-    Qt6::Core5Compat
+    Qt5::Widgets
+    Qt5::Core
     elaslib)
 
 message(STATUS ELAS_DIR:${ELAS_DIR})

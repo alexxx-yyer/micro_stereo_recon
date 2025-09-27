@@ -3,7 +3,7 @@
 
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QtCore5Compat/QTextCodec>
+#include <QTextCodec>
 
 #include "opencv2/core.hpp"
 #include "opencv2/imgproc.hpp"
@@ -21,7 +21,7 @@
 using namespace std;
 using namespace cv;
 
-// ½«QString×ª»»Îªstd::string
+// ï¿½ï¿½QString×ªï¿½ï¿½Îªstd::string
 string QStr_to_string(QString qstr) {
     QTextCodec* codec = QTextCodec::codecForName("GBK");
     if (!codec) {
@@ -32,7 +32,7 @@ string QStr_to_string(QString qstr) {
     return string(gbkByte.constData(), gbkByte.size());
 }
 
-// ¹¹Ôìº¯Êý£¬³õÊ¼»¯´°¿Ú
+// ï¿½ï¿½ï¿½ìº¯ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 window::window(QWidget *parent)
     : QWidget(parent)
     , ui(new Ui::window)
@@ -45,13 +45,13 @@ window::window(QWidget *parent)
     ui->manualSave->setDisabled(true);
 }
 
-// Îö¹¹º¯Êý£¬ÊÍ·ÅUI×ÊÔ´
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í·ï¿½UIï¿½ï¿½Ô´
 window::~window()
 {
     delete ui;
 }
 
-// ¼ÓÔØ²ÎÊýÎÄ¼þ
+// ï¿½ï¿½ï¿½Ø²ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½
 void window::on_loadParams_clicked(bool checked) {
     QString path = QFileDialog::getOpenFileName(this, "Load Parameters", "", "*.yml *.xml *.yaml");
     if (path.isEmpty()) {
@@ -72,7 +72,7 @@ void window::on_loadParams_clicked(bool checked) {
     ui->presetSizes->setCurrentIndex(0);
 }
 
-// ¼ÓÔØÍ¼Ïñ¶Ô
+// ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½
 void window::on_loadImages_clicked(bool checked) {
     lImgs.clear();
     rImgs.clear();
@@ -88,13 +88,13 @@ void window::on_loadImages_clicked(bool checked) {
     ui->lineEdit_2->setText(path);
 }
 
-// Ñ¡ÔñÊä³öÄ¿Â¼
+// Ñ¡ï¿½ï¿½ï¿½ï¿½ï¿½Ä¿Â¼
 void window::on_outputDir_clicked(bool checked) {
     QString path = QFileDialog::getExistingDirectory(this, "Choose Output Directory", ui->lineEdit->text());
     ui->lineEdit_3->setText(path);
 }
 
-// Á¢ÌåÐ£Õý
+// ï¿½ï¿½ï¿½ï¿½Ð£ï¿½ï¿½
 void window::on_rectify_clicked(bool checked) {
     if (newsize.empty()) {
         QMessageBox::information(this, "Caution", "The target image size is necessary");
@@ -150,29 +150,29 @@ void window::on_rectify_clicked(bool checked) {
     }
 }
 
-// ¸üÐÂÍ¼Ïñ¿í¶È
+// ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ï¿½ï¿½ï¿½
 void window::on_imgWidth_editingFinished() {
     newsize.width = ui->imgWidth->text().toInt();
     ui->presetSizes->setCurrentIndex(1);
 }
 
-// ¸üÐÂÍ¼Ïñ¸ß¶È
+// ï¿½ï¿½ï¿½ï¿½Í¼ï¿½ï¿½ß¶ï¿½
 void window::on_imgHeight_editingFinished() {
     newsize.height = ui->imgHeight->text().toInt();
     ui->presetSizes->setCurrentIndex(1);
 }
 
-// ÏÔÊ¾Ð£ÕýÍ¼ÏñÇÐ»»
+// ï¿½ï¿½Ê¾Ð£ï¿½ï¿½Í¼ï¿½ï¿½ï¿½Ð»ï¿½
 void window::on_showRectified_toggled(bool checked) {
     ui->manualSave->setDisabled(!checked);
 }
 
-// AlphaÖµÇÐ»»
+// AlphaÖµï¿½Ð»ï¿½
 void window::on_checkAlpha_toggled(bool checked) {
     ui->alpha->setDisabled(!checked);
 }
 
-// Ô¤Éè³ß´çÇÐ»»
+// Ô¤ï¿½ï¿½ß´ï¿½ï¿½Ð»ï¿½
 void window::on_presetSizes_currentIndexChanged(int index) {
     switch (index)
     {
@@ -187,11 +187,11 @@ void window::on_presetSizes_currentIndexChanged(int index) {
     }
 }
 
-// ±£´æ²ÎÊýÎÄ¼þ
+// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½
 void window::on_saveParams_clicked(bool checked) {
     QString recommend = ui->lineEdit->text();
     QString basename = "rectifiedParams.yml";
-    for (qsizetype i = recommend.size() - 1; i > 0; i--) {
+    for (int i = recommend.size() - 1; i > 0; i--) {
         if (recommend[i] == "/" || recommend[i] == "\\") {
             recommend.truncate(i + 1);
             break;
@@ -209,7 +209,7 @@ void window::on_saveParams_clicked(bool checked) {
     fs.release();
 }
 
-// ¸üÐÂGUIÖÐµÄÍ¼Ïñ³ß´ç
+// ï¿½ï¿½ï¿½ï¿½GUIï¿½Ðµï¿½Í¼ï¿½ï¿½ß´ï¿½
 inline void window::updateSizeGui() {
     ui->imgWidth->setText(QString::number(newsize.width));
     ui->imgHeight->setText(QString::number(newsize.height));

@@ -58,7 +58,7 @@ public slots:
     void on_save_clicked(bool checked);
     void selectDispSavePath(bool checked);
     void selectCloudSavePath(bool checked);
-    void on_saveCloud_checked(Qt::CheckState state);
+    void on_saveCloud_checked(int state);
 
     // algorithm group
     void on_sgbm(bool checked);

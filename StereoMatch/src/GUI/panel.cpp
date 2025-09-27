@@ -4,7 +4,7 @@
 #include "AlgWidget.h"
 #include "ui_panel.h"
 #include <QFileDialog>
-#include <QtCore5Compat/QTextCodec>
+#include <QTextCodec>
 #include <QMessageBox>
 #include "DirTools.h"
 #include "VisualizationTools.h"
@@ -53,7 +53,7 @@ panel::panel(QWidget *parent)
     connect(ui->saveButton, &QPushButton::clicked, this, &panel::on_save_clicked);
     connect(ui->savePathButton, &QPushButton::clicked, this, &panel::selectDispSavePath);
     connect(ui->cloudPathButton, &QPushButton::clicked, this, &panel::selectCloudSavePath);
-    connect(ui->isSaveCloud, &QCheckBox::checkStateChanged, this, &panel::on_saveCloud_checked);
+    connect(ui->isSaveCloud, QOverload<int>::of(&QCheckBox::stateChanged), this, &panel::on_saveCloud_checked);
 
     connect(ui->SGBMButton, &QRadioButton::toggled, this, &panel::on_sgbm);
     connect(ui->BMButton, &QRadioButton::toggled, this, &panel::on_bm);
@@ -72,7 +72,7 @@ panel::~panel()
 
 void panel::updateTotal() {
     string msg = "/" + to_string(lImgs.size());
-    ui->total->setText(QString::fromUtf8(msg));
+    ui->total->setText(QString::fromUtf8(msg.c_str()));
 }
 
 void panel::on_loadlist(bool checked) {
@@ -144,7 +144,7 @@ void panel::createLoadFile() {
 
 void panel::updateCounter() {
     string msg = to_string(idx + 1);
-    ui->index->setText(QString::fromUtf8(msg));
+    ui->index->setText(QString::fromUtf8(msg.c_str()));
 }
 
 /*******************************************************************************/
@@ -236,7 +236,7 @@ void panel::selectCloudSavePath(bool) {
     cloudSavedPath = fsys::path(QStr_to_string(dir));
 }
 
-void panel::on_saveCloud_checked(Qt::CheckState state) {
+void panel::on_saveCloud_checked(int state) {
     if (state == Qt::Checked) {
         if (Q.empty()) {
             QMessageBox box;

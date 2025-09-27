@@ -22,19 +22,17 @@ if(NOT PCL_DIR)
 endif()
 
 find_package(OpenCV REQUIRED)
-find_package(Qt6 REQUIRED COMPONENTS Widgets Core5Compat)
+find_package(Qt5 REQUIRED COMPONENTS Widgets Core)
 find_package(PCL REQUIRED)
 
-qt_standard_project_setup()
-
-qt_add_executable(stereoRectifier main.cpp
+add_executable(stereoRectifier main.cpp
     ${CUSTOMLIB_DIR}/StereoMatchingTools.cpp
     ${CUSTOMLIB_DIR}/DirTools.cpp
     ${CUSTOMLIB_DIR}/VisualizationTools.cpp
     window.cpp
-    window.h
-    window.ui)
+    moc_window.cpp
+    ui_window.h)
 
-target_link_libraries(stereoRectifier PRIVATE ${OpenCV_LIBRARIES} Qt6::Widgets Qt6::Core5Compat ${PCL_LIBRARIES})
+target_link_libraries(stereoRectifier PRIVATE ${OpenCV_LIBRARIES} Qt5::Widgets Qt5::Core ${PCL_LIBRARIES})
 
 target_include_directories(stereoRectifier PRIVATE ${OpenCV_INCLUDE_DIRS} ${CUSTOMLIB_DIR} ${PCL_INCLUDE_DIRS})

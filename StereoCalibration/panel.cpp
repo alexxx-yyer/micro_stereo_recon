@@ -6,7 +6,7 @@
 #include "StereoMatchingTools.h"
 
 #include <QFileDialog>
-#include <QtCore5Compat/QTextCodec>
+#include <QTextCodec>
 #include <QMessageBox>
 
 #include "opencv2/imgcodecs.hpp"
@@ -295,7 +295,7 @@ void panel::on_resetParams_clicked(bool checked) {
 void panel::on_save_clicked(bool checked) {
     QString recommend = ui->lineEdit->text();
     QString basename = "stereoParams.yml";
-    for (qsizetype i = recommend.size()-1; i > 0; i--) {
+    for (int i = recommend.size()-1; i > 0; i--) {
         if (recommend[i] == "/" || recommend[i] == "\\") {
             recommend.truncate(i + 1);
             break;
@@ -317,7 +317,7 @@ void panel::on_save_clicked(bool checked) {
 
 void panel::on_saveCorners_clicked(bool checked) {
     QString recommend = ui->lineEdit->text();
-    for (qsizetype i = recommend.size()-1; i > 0; i--) {
+    for (int i = recommend.size()-1; i > 0; i--) {
         if (recommend[i] == "/" || recommend[i] == "\\") {
             recommend.truncate(i + 1);
             break;

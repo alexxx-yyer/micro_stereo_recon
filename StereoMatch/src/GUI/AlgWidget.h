@@ -36,17 +36,17 @@ public:
         ui->modeList->addItem("SGBM_3WAY");
         ui->modeList->addItem("HH4");
 
-        connect(ui->BlockSize, &QSpinBox::valueChanged, this, &sgbm_setting::on_BlockSize_valueChanged);
-        connect(ui->numDisp, &QSpinBox::valueChanged, this, &sgbm_setting::on_numDisp_valueChanged);
-        connect(ui->minDisp, &QSpinBox::valueChanged, this, &sgbm_setting::on_minDisp_valueChanged);
-        connect(ui->p1, &QSpinBox::valueChanged, this, &sgbm_setting::on_p1_valueChanged);
-        connect(ui->p2, &QSpinBox::valueChanged, this, &sgbm_setting::on_p2_valueChanged);
-        connect(ui->preFilterCap, &QSpinBox::valueChanged, this, &sgbm_setting::on_preFilterCap_valueChanged);
-        connect(ui->uniqueRatio, &QSpinBox::valueChanged, this, &sgbm_setting::on_uniqueRatio_valueChanged);
-        connect(ui->speckleSize, &QSpinBox::valueChanged, this, &sgbm_setting::on_speckleSize_valueChanged);
-        connect(ui->speckleRange, &QSpinBox::valueChanged, this, &sgbm_setting::on_speckleRange_valueChanged);
-        connect(ui->disp12MaxDiff, &QSpinBox::valueChanged, this, &sgbm_setting::on_disp12MaxDiff_valueChanged);
-        connect(ui->modeList, &QComboBox::currentIndexChanged, this, &sgbm_setting::on_modeList_IndexChanged);
+        connect(ui->BlockSize, QOverload<int>::of(&QSpinBox::valueChanged), this, &sgbm_setting::on_BlockSize_valueChanged);
+        connect(ui->numDisp, QOverload<int>::of(&QSpinBox::valueChanged), this, &sgbm_setting::on_numDisp_valueChanged);
+        connect(ui->minDisp, QOverload<int>::of(&QSpinBox::valueChanged), this, &sgbm_setting::on_minDisp_valueChanged);
+        connect(ui->p1, QOverload<int>::of(&QSpinBox::valueChanged), this, &sgbm_setting::on_p1_valueChanged);
+        connect(ui->p2, QOverload<int>::of(&QSpinBox::valueChanged), this, &sgbm_setting::on_p2_valueChanged);
+        connect(ui->preFilterCap, QOverload<int>::of(&QSpinBox::valueChanged), this, &sgbm_setting::on_preFilterCap_valueChanged);
+        connect(ui->uniqueRatio, QOverload<int>::of(&QSpinBox::valueChanged), this, &sgbm_setting::on_uniqueRatio_valueChanged);
+        connect(ui->speckleSize, QOverload<int>::of(&QSpinBox::valueChanged), this, &sgbm_setting::on_speckleSize_valueChanged);
+        connect(ui->speckleRange, QOverload<int>::of(&QSpinBox::valueChanged), this, &sgbm_setting::on_speckleRange_valueChanged);
+        connect(ui->disp12MaxDiff, QOverload<int>::of(&QSpinBox::valueChanged), this, &sgbm_setting::on_disp12MaxDiff_valueChanged);
+        connect(ui->modeList, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &sgbm_setting::on_modeList_IndexChanged);
     }
 
     ~sgbm_setting() {
@@ -141,17 +141,17 @@ public:
         bm = new Alg_BM_Impl;
         alg = bm;
 
-        connect(ui->BlockSize, &QSpinBox::valueChanged, this, &bm_setting::on_BlockSize_changed);
-        connect(ui->numDisp, &QSpinBox::valueChanged, this, &bm_setting::on_numDisp_changed);
-        connect(ui->minDisp, &QSpinBox::valueChanged, this, &bm_setting::on_minDisp_changed);
-        connect(ui->preFilterCap, &QSpinBox::valueChanged, this, &bm_setting::on_preFilterCap_changed);
-        connect(ui->preFilterSize, &QSpinBox::valueChanged, this, &bm_setting::on_preFilterSize_changed);
-        connect(ui->comboBox, &QComboBox::currentIndexChanged, this, &bm_setting::on_preFilterType_changed);
-        connect(ui->SpeckleRange, &QSpinBox::valueChanged, this, &bm_setting::on_SpeckleRange_changed);
-        connect(ui->SpeckleSize, &QSpinBox::valueChanged, this, &bm_setting::on_SpeckleSize_changed);
-        connect(ui->textureThreshold, &QSpinBox::valueChanged, this, &bm_setting::on_textureThreshold_changed);
-        connect(ui->uniquenessRatio, &QSpinBox::valueChanged, this, &bm_setting::on_uniquessRatio_changed);
-        connect(ui->disp12MaxDiff, &QSpinBox::valueChanged, this, &bm_setting::on_disp12MaxDiff_changed);
+        connect(ui->BlockSize, QOverload<int>::of(&QSpinBox::valueChanged), this, &bm_setting::on_BlockSize_changed);
+        connect(ui->numDisp, QOverload<int>::of(&QSpinBox::valueChanged), this, &bm_setting::on_numDisp_changed);
+        connect(ui->minDisp, QOverload<int>::of(&QSpinBox::valueChanged), this, &bm_setting::on_minDisp_changed);
+        connect(ui->preFilterCap, QOverload<int>::of(&QSpinBox::valueChanged), this, &bm_setting::on_preFilterCap_changed);
+        connect(ui->preFilterSize, QOverload<int>::of(&QSpinBox::valueChanged), this, &bm_setting::on_preFilterSize_changed);
+        connect(ui->comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &bm_setting::on_preFilterType_changed);
+        connect(ui->SpeckleRange, QOverload<int>::of(&QSpinBox::valueChanged), this, &bm_setting::on_SpeckleRange_changed);
+        connect(ui->SpeckleSize, QOverload<int>::of(&QSpinBox::valueChanged), this, &bm_setting::on_SpeckleSize_changed);
+        connect(ui->textureThreshold, QOverload<int>::of(&QSpinBox::valueChanged), this, &bm_setting::on_textureThreshold_changed);
+        connect(ui->uniquenessRatio, QOverload<int>::of(&QSpinBox::valueChanged), this, &bm_setting::on_uniquessRatio_changed);
+        connect(ui->disp12MaxDiff, QOverload<int>::of(&QSpinBox::valueChanged), this, &bm_setting::on_disp12MaxDiff_changed);
     }
 
     ~bm_setting() {

@@ -48,7 +48,7 @@ public:
         fileButton->setObjectName("fileButton");
         fileButton->setGeometry(QRect(140, 50, 25, 25));
         fileButton->setMaximumSize(QSize(25, 25));
-        QIcon icon(QIcon::fromTheme(QIcon::ThemeIcon::DocumentNew));
+        QIcon icon(QIcon::fromTheme("document-new"));
         fileButton->setIcon(icon);
         label = new QLabel(loadlist);
         label->setObjectName("label");
@@ -142,7 +142,7 @@ public:
         lfileButton->setObjectName("lfileButton");
         lfileButton->setGeometry(QRect(130, 45, 25, 25));
         lfileButton->setMaximumSize(QSize(25, 25));
-        QIcon icon(QIcon::fromTheme(QIcon::ThemeIcon::DocumentNew));
+        QIcon icon(QIcon::fromTheme("document-new"));
         lfileButton->setIcon(icon);
         rfileButton = new QPushButton(loadfile);
         rfileButton->setObjectName("rfileButton");
@@ -153,7 +153,7 @@ public:
         ldirButton->setObjectName("ldirButton");
         ldirButton->setGeometry(QRect(155, 45, 25, 25));
         ldirButton->setMaximumSize(QSize(25, 25));
-        QIcon icon1(QIcon::fromTheme(QIcon::ThemeIcon::FolderOpen));
+        QIcon icon1(QIcon::fromTheme("folder-open"));
         ldirButton->setIcon(icon1);
         rdirButton = new QPushButton(loadfile);
         rdirButton->setObjectName("rdirButton");

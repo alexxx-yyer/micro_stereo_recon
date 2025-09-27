@@ -29,4 +29,4 @@ target_include_directories(StereoMatchConsole PRIVATE
     ${PCL_INCLUDE_DIRS}
     ${ELAS_DIR})
 
-target_link_libraries(StereoMatchConsole PRIVATE opencv_world ${PCL_LIBRARIES} elaslib)
+target_link_libraries(StereoMatchConsole PRIVATE ${OpenCV_LIBRARIES} ${PCL_LIBRARIES} elaslib)
