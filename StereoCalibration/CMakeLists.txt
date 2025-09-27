@@ -12,8 +12,8 @@ find_package(OpenCV REQUIRED)
 find_package(Qt5 REQUIRED COMPONENTS Widgets Core)
 
 # Set Qt5 tools explicitly
-set(QT5_UIC_EXECUTABLE /usr/bin/uic)
-set(QT5_MOC_EXECUTABLE /usr/bin/moc)
+set(QT5_UIC_EXECUTABLE /usr/lib/x86_64-linux-gnu/qt5/bin/uic)
+set(QT5_MOC_EXECUTABLE /usr/lib/x86_64-linux-gnu/qt5/bin/moc)
 
 add_executable(test
     test.cpp

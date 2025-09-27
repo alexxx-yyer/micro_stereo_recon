@@ -50,10 +50,11 @@ _deps/
 *.prl
 
 # Qt generated files (MOC/UIC)
-# Note: UI files (ui_*.h) are needed for compilation, so we keep them
-# Only ignore MOC files as they can be regenerated
-**/moc_*.cpp
-**/moc_*.h
+# Note: These files are manually generated and needed for compilation
+# They should be committed to the repository
+# **/moc_*.cpp
+# **/moc_*.h
+# **/ui_*.h
 **/qrc_*.cpp
 
 # Qt Creator

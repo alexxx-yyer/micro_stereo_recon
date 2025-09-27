@@ -15,6 +15,10 @@ find_package(OpenCV REQUIRED)
 find_package(PCL REQUIRED)
 find_package(Qt5 REQUIRED COMPONENTS Widgets Core)
 
+# Set Qt5 tools explicitly
+set(QT5_UIC_EXECUTABLE /usr/lib/x86_64-linux-gnu/qt5/bin/uic)
+set(QT5_MOC_EXECUTABLE /usr/lib/x86_64-linux-gnu/qt5/bin/moc)
+
 # Print configuration info
 message(STATUS "OpenCV version: ${OpenCV_VERSION}")
 message(STATUS "OpenCV include dirs: ${OpenCV_INCLUDE_DIRS}")
