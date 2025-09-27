@@ -1,0 +1,33 @@
+# 忽略 build 文件夹（常用于 CMake 构建输出）
+build/
+build*/
+
+# 编译输出文件
+*.o
+*.obj
+*.so
+*.a
+*.lib
+*.dll
+*.exe
+*.out
+
+# 临时编辑器文件
+*~
+*.swp
+
+# VSCode 设置（如果你用 VSCode）
+.vscode/
+
+# CLion 设置（如果你用 CLion）
+.idea/
+
+# CMake 生成的文件
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+compile_commands.json
+
+# 日志文件
+*.log
