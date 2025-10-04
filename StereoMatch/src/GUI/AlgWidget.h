@@ -36,17 +36,23 @@ public:
         ui->modeList->addItem("SGBM_3WAY");
         ui->modeList->addItem("HH4");
 
-        connect(ui->BlockSize, QOverload<int>::of(&QSpinBox::valueChanged), this, &sgbm_setting::on_BlockSize_valueChanged);
-        connect(ui->numDisp, QOverload<int>::of(&QSpinBox::valueChanged), this, &sgbm_setting::on_numDisp_valueChanged);
-        connect(ui->minDisp, QOverload<int>::of(&QSpinBox::valueChanged), this, &sgbm_setting::on_minDisp_valueChanged);
-        connect(ui->p1, QOverload<int>::of(&QSpinBox::valueChanged), this, &sgbm_setting::on_p1_valueChanged);
-        connect(ui->p2, QOverload<int>::of(&QSpinBox::valueChanged), this, &sgbm_setting::on_p2_valueChanged);
-        connect(ui->preFilterCap, QOverload<int>::of(&QSpinBox::valueChanged), this, &sgbm_setting::on_preFilterCap_valueChanged);
-        connect(ui->uniqueRatio, QOverload<int>::of(&QSpinBox::valueChanged), this, &sgbm_setting::on_uniqueRatio_valueChanged);
-        connect(ui->speckleSize, QOverload<int>::of(&QSpinBox::valueChanged), this, &sgbm_setting::on_speckleSize_valueChanged);
-        connect(ui->speckleRange, QOverload<int>::of(&QSpinBox::valueChanged), this, &sgbm_setting::on_speckleRange_valueChanged);
-        connect(ui->disp12MaxDiff, QOverload<int>::of(&QSpinBox::valueChanged), this, &sgbm_setting::on_disp12MaxDiff_valueChanged);
-        connect(ui->modeList, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &sgbm_setting::on_modeList_IndexChanged);
+        connect(ui->BlockSize, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &sgbm_setting::on_BlockSize_valueChanged);
+        connect(ui->numDisp, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &sgbm_setting::on_numDisp_valueChanged);
+        connect(ui->minDisp, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &sgbm_setting::on_minDisp_valueChanged);
+        connect(ui->p1, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &sgbm_setting::on_p1_valueChanged);
+        connect(ui->p2, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &sgbm_setting::on_p2_valueChanged);
+        connect(ui->preFilterCap, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &sgbm_setting::on_preFilterCap_valueChanged);
+        connect(ui->uniqueRatio, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &sgbm_setting::on_uniqueRatio_valueChanged);
+        connect(ui->speckleSize, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &sgbm_setting::on_speckleSize_valueChanged);
+        connect(ui->speckleRange, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &sgbm_setting::on_speckleRange_valueChanged);
+        connect(ui->disp12MaxDiff, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &sgbm_setting::on_disp12MaxDiff_valueChanged);
+        connect(ui->modeList, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &sgbm_setting::on_modeList_IndexChanged);
+        connect(ui->useWLS, &QCheckBox::toggled, this, &sgbm_setting::on_useWLS_toggled);
+        connect(ui->wlsLambda, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &sgbm_setting::on_wlsLambda_valueChanged);
+        connect(ui->wlsSigma, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &sgbm_setting::on_wlsSigma_valueChanged);
+        connect(ui->useFBS, &QCheckBox::toggled, this, &sgbm_setting::on_useFBS_toggled);
+        connect(ui->fbsLambda, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &sgbm_setting::on_fbsLambda_valueChanged);
+        connect(ui->fbsSigma, static_cast<void(QDoubleSpinBox::*)(double)>(&QDoubleSpinBox::valueChanged), this, &sgbm_setting::on_fbsSigma_valueChanged);
     }
 
     ~sgbm_setting() {
@@ -61,6 +67,8 @@ public:
         delete ui->label_9;
         delete ui->label_10;
         delete ui->label_11;
+        delete ui->label_12;
+        delete ui->label_13;
         delete ui->BlockSize;
         delete ui->numDisp;
         delete ui->minDisp;
@@ -71,6 +79,12 @@ public:
         delete ui->speckleSize;
         delete ui->speckleRange;
         delete ui->disp12MaxDiff;
+        delete ui->useWLS;
+        delete ui->wlsLambda;
+        delete ui->wlsSigma;
+        delete ui->useFBS;
+        delete ui->fbsLambda;
+        delete ui->fbsSigma;
         delete ui->modeList;
         delete sgbm;
         alg = nullptr;
@@ -89,6 +103,12 @@ public:
         ui->speckleSize->setValue(sgbm->alg->getSpeckleWindowSize());
         ui->speckleRange->setValue(sgbm->alg->getSpeckleRange());
         ui->disp12MaxDiff->setValue(sgbm->alg->getDisp12MaxDiff());
+        ui->useWLS->setChecked(sgbm->getUseWLS());
+        ui->wlsLambda->setValue(sgbm->getWLSLambda());
+        ui->wlsSigma->setValue(sgbm->getWLSSigma());
+        ui->useFBS->setChecked(sgbm->getUseFBS());
+        ui->fbsLambda->setValue(sgbm->getFBSLambda());
+        ui->fbsSigma->setValue(sgbm->getFBSSigma());
     }
 
     void show() {
@@ -102,6 +122,9 @@ public:
         ui->label_8->show();
         ui->label_9->show();
         ui->label_10->show();
+        ui->label_11->show();
+        ui->label_12->show();
+        ui->label_13->show();
         ui->BlockSize->show();
         ui->numDisp->show();
         ui->minDisp->show();
@@ -112,6 +135,13 @@ public:
         ui->speckleSize->show();
         ui->speckleRange->show();
         ui->disp12MaxDiff->show();
+        ui->useWLS->show();
+        ui->wlsLambda->show();
+        ui->wlsSigma->show();
+        ui->useFBS->show();
+        ui->fbsLambda->show();
+        ui->fbsSigma->show();
+        ui->modeList->show();
     }
 
 private:
@@ -129,6 +159,12 @@ private slots:
     void on_speckleRange_valueChanged(int val) {sgbm->alg->setSpeckleRange(val);}
     void on_disp12MaxDiff_valueChanged(int val) {sgbm->alg->setDisp12MaxDiff(val);}
     void on_modeList_IndexChanged(int idx) {sgbm->alg->setMode(idx);}
+    void on_useWLS_toggled(bool checked) {sgbm->setUseWLS(checked);}
+    void on_wlsLambda_valueChanged(double val) {sgbm->setWLSLambda(val);}
+    void on_wlsSigma_valueChanged(double val) {sgbm->setWLSSigma(val);}
+    void on_useFBS_toggled(bool checked) {sgbm->setUseFBS(checked);}
+    void on_fbsLambda_valueChanged(double val) {sgbm->setFBSLambda(val);}
+    void on_fbsSigma_valueChanged(double val) {sgbm->setFBSSigma(val);}
 };
 
 class bm_setting : public AlgWidget {
@@ -141,17 +177,17 @@ public:
         bm = new Alg_BM_Impl;
         alg = bm;
 
-        connect(ui->BlockSize, QOverload<int>::of(&QSpinBox::valueChanged), this, &bm_setting::on_BlockSize_changed);
-        connect(ui->numDisp, QOverload<int>::of(&QSpinBox::valueChanged), this, &bm_setting::on_numDisp_changed);
-        connect(ui->minDisp, QOverload<int>::of(&QSpinBox::valueChanged), this, &bm_setting::on_minDisp_changed);
-        connect(ui->preFilterCap, QOverload<int>::of(&QSpinBox::valueChanged), this, &bm_setting::on_preFilterCap_changed);
-        connect(ui->preFilterSize, QOverload<int>::of(&QSpinBox::valueChanged), this, &bm_setting::on_preFilterSize_changed);
-        connect(ui->comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &bm_setting::on_preFilterType_changed);
-        connect(ui->SpeckleRange, QOverload<int>::of(&QSpinBox::valueChanged), this, &bm_setting::on_SpeckleRange_changed);
-        connect(ui->SpeckleSize, QOverload<int>::of(&QSpinBox::valueChanged), this, &bm_setting::on_SpeckleSize_changed);
-        connect(ui->textureThreshold, QOverload<int>::of(&QSpinBox::valueChanged), this, &bm_setting::on_textureThreshold_changed);
-        connect(ui->uniquenessRatio, QOverload<int>::of(&QSpinBox::valueChanged), this, &bm_setting::on_uniquessRatio_changed);
-        connect(ui->disp12MaxDiff, QOverload<int>::of(&QSpinBox::valueChanged), this, &bm_setting::on_disp12MaxDiff_changed);
+        connect(ui->BlockSize, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &bm_setting::on_BlockSize_changed);
+        connect(ui->numDisp, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &bm_setting::on_numDisp_changed);
+        connect(ui->minDisp, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &bm_setting::on_minDisp_changed);
+        connect(ui->preFilterCap, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &bm_setting::on_preFilterCap_changed);
+        connect(ui->preFilterSize, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &bm_setting::on_preFilterSize_changed);
+        connect(ui->comboBox, static_cast<void(QComboBox::*)(int)>(&QComboBox::currentIndexChanged), this, &bm_setting::on_preFilterType_changed);
+        connect(ui->SpeckleRange, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &bm_setting::on_SpeckleRange_changed);
+        connect(ui->SpeckleSize, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &bm_setting::on_SpeckleSize_changed);
+        connect(ui->textureThreshold, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &bm_setting::on_textureThreshold_changed);
+        connect(ui->uniquenessRatio, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &bm_setting::on_uniquessRatio_changed);
+        connect(ui->disp12MaxDiff, static_cast<void(QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &bm_setting::on_disp12MaxDiff_changed);
     }
 
     ~bm_setting() {

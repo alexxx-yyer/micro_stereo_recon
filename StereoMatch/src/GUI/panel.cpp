@@ -53,7 +53,7 @@ panel::panel(QWidget *parent)
     connect(ui->saveButton, &QPushButton::clicked, this, &panel::on_save_clicked);
     connect(ui->savePathButton, &QPushButton::clicked, this, &panel::selectDispSavePath);
     connect(ui->cloudPathButton, &QPushButton::clicked, this, &panel::selectCloudSavePath);
-    connect(ui->isSaveCloud, QOverload<int>::of(&QCheckBox::stateChanged), this, &panel::on_saveCloud_checked);
+    connect(ui->isSaveCloud, static_cast<void(QCheckBox::*)(int)>(&QCheckBox::stateChanged), this, &panel::on_saveCloud_checked);
 
     connect(ui->SGBMButton, &QRadioButton::toggled, this, &panel::on_sgbm);
     connect(ui->BMButton, &QRadioButton::toggled, this, &panel::on_bm);

@@ -106,9 +106,9 @@ public:
         verticalLayoutWidget->setObjectName(QString::fromUtf8("verticalLayoutWidget"));
         verticalLayoutWidget->setGeometry(QRect(10, 25, 300, 284));
         verticalLayout = new QVBoxLayout(verticalLayoutWidget);
-        verticalLayout->setSpacing(0);
+        verticalLayout->setSpacing(6);
         verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
-        verticalLayout->setContentsMargins(0, 0, 0, 0);
+        verticalLayout->setContentsMargins(5, 5, 5, 5);
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
         nintrinsics = new QCheckBox(verticalLayoutWidget);

@@ -222,12 +222,17 @@ void SGBM_Console::showSetting() {
         break;
     }
     cout << endl;
+    printf("12 %s: %s\n", "Use WLS Filter", sgbm->getUseWLS() ? "true" : "false");
+    printf("13 %s: %.1f\n", "WLS Lambda", sgbm->getWLSLambda());
+    printf("14 %s: %.2f\n", "WLS Sigma", sgbm->getWLSSigma());
+    printf("15 %s: %s\n", "Use FBS Filter", sgbm->getUseFBS() ? "true" : "false");
+    printf("16 %s: %.1f\n", "FBS Lambda", sgbm->getFBSLambda());
+    printf("17 %s: %.3f\n", "FBS Sigma", sgbm->getFBSSigma());
 }
 
 void SGBM_Console::modifySetting() {
     Alg_SGBM_Impl *sgbm = (Alg_SGBM_Impl*) algorithm_ptr;
     while(1) {
-        system("cls");
         showSetting();
         printf("0 run\n");
         cout << "Please enter the attribute index to be modified:\n";
@@ -236,10 +241,22 @@ void SGBM_Console::modifySetting() {
         if (idx == 0)
             return;
         int value;
+        double dvalue;
+        bool bvalue;
         if (idx > 0 && idx < 11) {
             cout << "Please enter the value:\n";
             cin >> value;
         }
+        else if (idx == 12 || idx == 15) {
+            cout << "Please enter true(1) or false(0):\n";
+            cin >> value;
+            bvalue = (value != 0);
+        }
+        else if (idx == 13 || idx == 14 || idx == 16 || idx == 17) {
+            cout << "Please enter the value:\n";
+            cin >> dvalue;
+        }
+        
         switch (idx) {
         case 1:
             sgbm->alg->setBlockSize(value);
@@ -284,6 +301,24 @@ void SGBM_Console::modifySetting() {
             sgbm->alg->setMode(mode);
             break;
         }
+        case 12:
+            sgbm->setUseWLS(bvalue);
+            break;
+        case 13:
+            sgbm->setWLSLambda(dvalue);
+            break;
+        case 14:
+            sgbm->setWLSSigma(dvalue);
+            break;
+        case 15:
+            sgbm->setUseFBS(bvalue);
+            break;
+        case 16:
+            sgbm->setFBSLambda(dvalue);
+            break;
+        case 17:
+            sgbm->setFBSSigma(dvalue);
+            break;
         default:
             break;
         }

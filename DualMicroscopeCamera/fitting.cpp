@@ -6,201 +6,201 @@
 using namespace cv;
 using namespace std;
 
-//¹¦ÄÜ£º¼ÆËãÍ¼ÏñµÄ»ı·ÖÖµ£¨ËùÓĞÏñËØÖµµÄ¹éÒ»»¯ÀÛ¼ÓºÍ£©
-//ÊäÈë£º»Ò¶ÈÍ¼Ïñ img
-//Êä³ö£º»ı·ÖÖµ£¨·¶Î§ÔÚ[0, Í¼ÏñÏñËØ×ÜÊı]£©
-//ÒâÒå£ºÓÃÓÚÆÀ¹ÀÍ¼ÏñµÄÕûÌåÁÁ¶È»òÄÜÁ¿£¬¿ÉÄÜÔÚºóĞø²½ÖèÖĞÓÃÓÚ¹éÒ»»¯»òÓÅ»¯Ä¿±êº¯Êı
+//åŠŸèƒ½ï¼šè®¡ç®—å›¾åƒçš„ç§¯åˆ†å€¼ï¼ˆæ‰€æœ‰åƒç´ å€¼çš„å½’ä¸€åŒ–ç´¯åŠ å’Œï¼‰
+//è¾“å…¥ï¼šç°åº¦å›¾åƒ img
+//è¾“å‡ºï¼šç§¯åˆ†å€¼ï¼ˆèŒƒå›´åœ¨[0, å›¾åƒåƒç´ æ€»æ•°]ï¼‰
+//æ„ä¹‰ï¼šç”¨äºè¯„ä¼°å›¾åƒçš„æ•´ä½“äº®åº¦æˆ–èƒ½é‡ï¼Œå¯èƒ½åœ¨åç»­æ­¥éª¤ä¸­ç”¨äºå½’ä¸€åŒ–æˆ–ä¼˜åŒ–ç›®æ ‡å‡½æ•°
 static double imgIntegration(Mat& img) {
     double res = 0; 
     uchar* data = img.data; 
     for (size_t i = 0; i < img.total(); i++) {
-        // ½«Ã¿¸öÏñËØÖµ×ª»»Îª[0, 1]·¶Î§ÄÚµÄ¸¡µãÊı²¢ÀÛ¼Óµ½½á¹ûÖĞ
+        // å°†æ¯ä¸ªåƒç´ å€¼è½¬æ¢ä¸º[0, 1]èŒƒå›´å†…çš„æµ®ç‚¹æ•°å¹¶ç´¯åŠ åˆ°ç»“æœä¸­
         res = res + double(data[i]) / 255;
     }
     return res;
 }
 
-//¹¦ÄÜ£º¸ù¾İ¸ø¶¨µÄ×ø±ê coord ºÍ²ÎÊı params£¬¼ÆËãÄ£ĞÍµÄÔ¤²âÖµ
-//Ä£ĞÍĞÎÊ½£º
-//²ÎÊı£ºparams = [a1, a2, cx, cy, b1, b2]£¬ÆäÖĞ£ºa1, a2£ºÁ½¸ö·½ÏòµÄ½Ç¶È;cx, cy£ºÖĞĞÄµã×ø±ê;b1, b2£ºÏß¿í²ÎÊı
-//¹«Ê½£ºÍ¨¹ıÂß¼­º¯Êı£¨Sigmoid£©×éºÏÁ½¸ö½»²æ·½ÏòµÄÖ±Ïß£¬Ä£Äâ½»²æÏßµÄÇ¿¶È·Ö²¼
-//Êä³ö£ºÄ£ĞÍÔÚ×ø±ê coord ´¦µÄÔ¤²âÖµ£¨·¶Î§[0, 1]£©
-//ÒâÒå£º¶¨ÒåÁËÒ»¸öË«ÏßĞÔ½»²æµÄÊıÑ§Ä£ĞÍ£¬ÓÃÓÚÄâºÏÍ¼ÏñÖĞµÄ½»²æ½á¹¹£¨ÈçÆåÅÌ¸ñ½Çµã£©
+//åŠŸèƒ½ï¼šæ ¹æ®ç»™å®šçš„åæ ‡ coord å’Œå‚æ•° paramsï¼Œè®¡ç®—æ¨¡å‹çš„é¢„æµ‹å€¼
+//æ¨¡å‹å½¢å¼ï¼š
+//å‚æ•°ï¼šparams = [a1, a2, cx, cy, b1, b2]ï¼Œå…¶ä¸­ï¼ša1, a2ï¼šä¸¤ä¸ªæ–¹å‘çš„è§’åº¦;cx, cyï¼šä¸­å¿ƒç‚¹åæ ‡;b1, b2ï¼šçº¿å®½å‚æ•°
+//å…¬å¼ï¼šé€šè¿‡é€»è¾‘å‡½æ•°ï¼ˆSigmoidï¼‰ç»„åˆä¸¤ä¸ªäº¤å‰æ–¹å‘çš„ç›´çº¿ï¼Œæ¨¡æ‹Ÿäº¤å‰çº¿çš„å¼ºåº¦åˆ†å¸ƒ
+//è¾“å‡ºï¼šæ¨¡å‹åœ¨åæ ‡ coord å¤„çš„é¢„æµ‹å€¼ï¼ˆèŒƒå›´[0, 1]ï¼‰
+//æ„ä¹‰ï¼šå®šä¹‰äº†ä¸€ä¸ªåŒçº¿æ€§äº¤å‰çš„æ•°å­¦æ¨¡å‹ï¼Œç”¨äºæ‹Ÿåˆå›¾åƒä¸­çš„äº¤å‰ç»“æ„ï¼ˆå¦‚æ£‹ç›˜æ ¼è§’ç‚¹ï¼‰
 static double calcModelValue(Point2d coord, const Vec6d& params) {
-    // ´Ó²ÎÊıÏòÁ¿ÖĞÌáÈ¡¸÷¸ö²ÎÊı
+    // ä»å‚æ•°å‘é‡ä¸­æå–å„ä¸ªå‚æ•°
     const double &a1 = params[0], &a2 = params[1], &cx = params[2], &cy = params[3], &b1 = params[4], &b2 = params[5];
-    // ¼ÆËãÁ½¸ö·½ÏòµÄÏµÊı
+    // è®¡ç®—ä¸¤ä¸ªæ–¹å‘çš„ç³»æ•°
     Point2d coeff1(cos(a1), sin(a1));
     Point2d coeff2(cos(a2), sin(a2));
-    // ¼ÆËãÁ½¸ö·½ÏòµÄ¾àÀë
+    // è®¡ç®—ä¸¤ä¸ªæ–¹å‘çš„è·ç¦»
     double l1 = coeff1.cross(coord) - coeff1.cross(Point2d(cx, cy));
     double l2 = coeff2.cross(coord) - coeff2.cross(Point2d(cx, cy));
-    // ¼ÆËãËÄ¸öÂß¼­º¯ÊıµÄÖµ
+    // è®¡ç®—å››ä¸ªé€»è¾‘å‡½æ•°çš„å€¼
     double f1 = 1 / (1 + exp(-10 * (l1 + b1 / 2)));
     double f2 = 1 / (1 + exp(10 * (l1 - b1 / 2)));
     double f3 = 1 / (1 + exp(-10 * (l2 + b2 / 2)));
     double f4 = 1 / (1 + exp(10 * (l2 - b2 / 2)));
-    // ·µ»ØÄ£ĞÍÖµ
+    // è¿”å›æ¨¡å‹å€¼
     return f1 * f2 + f3 * f4 - f1 * f2 * f3 * f4;
 }
 
-//¹¦ÄÜ£º¸ù¾İ²ÎÊıÉú³ÉÄ£°åÍ¼Ïñ
-//ÊäÈë£ºsize£ºÄ£°å³ß´ç;params£ºÄ£ĞÍ²ÎÊı;ws£º´°¿Ú´óĞ¡£¨ÓÃÓÚµ÷ÕûÖĞĞÄ×ø±ê£©
-//Êä³ö£ºÉú³ÉµÄÄ£°åÍ¼Ïñ£¨CV_8U ÀàĞÍ£©
-//ÒâÒå£ºÓÃÓÚÄ£°åÆ¥Åä£¨matchTemplate£©£¬ÔÚ´ÖÂÔÄâºÏ½×¶Î¿ìËÙ¶¨Î»½»²æ½á¹¹µÄ´óÖÂÎ»ÖÃ
+//åŠŸèƒ½ï¼šæ ¹æ®å‚æ•°ç”Ÿæˆæ¨¡æ¿å›¾åƒ
+//è¾“å…¥ï¼šsizeï¼šæ¨¡æ¿å°ºå¯¸;paramsï¼šæ¨¡å‹å‚æ•°;wsï¼šçª—å£å¤§å°ï¼ˆç”¨äºè°ƒæ•´ä¸­å¿ƒåæ ‡ï¼‰
+//è¾“å‡ºï¼šç”Ÿæˆçš„æ¨¡æ¿å›¾åƒï¼ˆCV_8U ç±»å‹ï¼‰
+//æ„ä¹‰ï¼šç”¨äºæ¨¡æ¿åŒ¹é…ï¼ˆmatchTemplateï¼‰ï¼Œåœ¨ç²—ç•¥æ‹Ÿåˆé˜¶æ®µå¿«é€Ÿå®šä½äº¤å‰ç»“æ„çš„å¤§è‡´ä½ç½®
 static Mat getTempl(Size size, const Vec6d& params, int ws) {
-    int shift = ws / 2; // ¼ÆËãÄ£°åµÄÆ«ÒÆÁ¿
-    Mat dst(size, CV_8U); // ´´½¨Ä¿±êÄ£°åÍ¼Ïñ
-    // ´Ó²ÎÊıÏòÁ¿ÖĞÌáÈ¡¸÷¸ö²ÎÊı
+    int shift = ws / 2; // è®¡ç®—æ¨¡æ¿çš„åç§»é‡
+    Mat dst(size, CV_8U); // åˆ›å»ºç›®æ ‡æ¨¡æ¿å›¾åƒ
+    // ä»å‚æ•°å‘é‡ä¸­æå–å„ä¸ªå‚æ•°
     const double& a1 = params[0], & a2 = params[1], & b1 = params[4], & b2 = params[5];
     double cx = params[2], cy = params[3];
-    // µ÷ÕûÖĞĞÄ×ø±ê
+    // è°ƒæ•´ä¸­å¿ƒåæ ‡
     cx -= shift;
     cy -= shift;
-    // ¼ÆËãÁ½¸ö·½ÏòµÄÏµÊı
+    // è®¡ç®—ä¸¤ä¸ªæ–¹å‘çš„ç³»æ•°
     Point2d coeff1(cos(a1), sin(a1));
     Point2d coeff2(cos(a2), sin(a2));
-    // ±éÀúÄ£°åÍ¼ÏñµÄÃ¿¸öÏñËØ
+    // éå†æ¨¡æ¿å›¾åƒçš„æ¯ä¸ªåƒç´ 
     for (int i = 0; i < dst.rows; i++) {
-        uchar* ptr = dst.ptr(i); // »ñÈ¡µ±Ç°ĞĞµÄÖ¸Õë
+        uchar* ptr = dst.ptr(i); // è·å–å½“å‰è¡Œçš„æŒ‡é’ˆ
         for (int j = 0; j < dst.cols; j++) {
-            Point2d coord(j, i); // µ±Ç°ÏñËØµÄ×ø±ê
-            // ¼ÆËãÁ½¸ö·½ÏòµÄ¾àÀë
+            Point2d coord(j, i); // å½“å‰åƒç´ çš„åæ ‡
+            // è®¡ç®—ä¸¤ä¸ªæ–¹å‘çš„è·ç¦»
             double l1 = coeff1.cross(coord) - coeff1.cross(Point2d(cx, cy));
             double l2 = coeff2.cross(coord) - coeff2.cross(Point2d(cx, cy));
-            // ¼ÆËãËÄ¸öÂß¼­º¯ÊıµÄÖµ
+            // è®¡ç®—å››ä¸ªé€»è¾‘å‡½æ•°çš„å€¼
             double f1 = 1 / (1 + exp(-10 * (l1 + b1 / 2)));
             double f2 = 1 / (1 + exp(10 * (l1 - b1 / 2)));
             double f3 = 1 / (1 + exp(-10 * (l2 + b2 / 2)));
             double f4 = 1 / (1 + exp(10 * (l2 - b2 / 2)));
-            // ¼ÆËãµ±Ç°ÏñËØµÄÖµ²¢¸³Öµ
+            // è®¡ç®—å½“å‰åƒç´ çš„å€¼å¹¶èµ‹å€¼
             ptr[j] = 255 * (f1 * f2 + f3 * f4 - f1 * f2 * f3 * f4);
         }
     }
-    return dst; // ·µ»ØÉú³ÉµÄÄ£°åÍ¼Ïñ
+    return dst; // è¿”å›ç”Ÿæˆçš„æ¨¡æ¿å›¾åƒ
 }
 
-// ¼ÆËãÍ¼ÏñÓëÄ£ĞÍÖ®¼äµÄÏà¹ØĞÔµÃ·Ö
+// è®¡ç®—å›¾åƒä¸æ¨¡å‹ä¹‹é—´çš„ç›¸å…³æ€§å¾—åˆ†
 static double correlationScore(Mat& img, Vec6d params) {
-    double dst = 0; // ³õÊ¼»¯Ïà¹ØĞÔµÃ·Ö
-    // ±éÀúÍ¼ÏñµÄÃ¿Ò»ĞĞ
+    double dst = 0; // åˆå§‹åŒ–ç›¸å…³æ€§å¾—åˆ†
+    // éå†å›¾åƒçš„æ¯ä¸€è¡Œ
     for (int i = 0; i < img.rows; i++) {
-        uchar* ptr = img.ptr(i); // »ñÈ¡µ±Ç°ĞĞµÄÖ¸Õë
-        // ±éÀúµ±Ç°ĞĞµÄÃ¿Ò»ÁĞ
+        uchar* ptr = img.ptr(i); // è·å–å½“å‰è¡Œçš„æŒ‡é’ˆ
+        // éå†å½“å‰è¡Œçš„æ¯ä¸€åˆ—
         for (int j = 0; j < img.cols; j++) {
-            double model = calcModelValue(Point2d(j, i), params); // ¼ÆËãÄ£ĞÍÖµ
-            double data = (double)ptr[j]; // »ñÈ¡Í¼ÏñÊı¾İ
-            dst += model * data; // ÀÛ¼ÓÄ£ĞÍÖµÓëÍ¼ÏñÊı¾İµÄ³Ë»ı
+            double model = calcModelValue(Point2d(j, i), params); // è®¡ç®—æ¨¡å‹å€¼
+            double data = (double)ptr[j]; // è·å–å›¾åƒæ•°æ®
+            dst += model * data; // ç´¯åŠ æ¨¡å‹å€¼ä¸å›¾åƒæ•°æ®çš„ä¹˜ç§¯
         }
     }
-    return dst; // ·µ»ØÏà¹ØĞÔµÃ·Ö
+    return dst; // è¿”å›ç›¸å…³æ€§å¾—åˆ†
 }
 
-// ÔÚÍ¼ÏñÉÏ»æÖÆÖ±Ïß£¨Ä¬ÈÏÑÕÉ«Îª°×É«£¬Ïß¿íÎª1£©
+// åœ¨å›¾åƒä¸Šç»˜åˆ¶ç›´çº¿ï¼ˆé»˜è®¤é¢œè‰²ä¸ºç™½è‰²ï¼Œçº¿å®½ä¸º1ï¼‰
 static void drawLine(Mat& img, double a, double b, double c) {
-    Point2d p1, p2; // ¶¨ÒåÁ½¸öµã
-    p1.x = 0; // µÚÒ»¸öµãµÄx×ø±ê
-    p2.x = img.cols; // µÚ¶ş¸öµãµÄx×ø±ê
-    p1.y = -c / b; // µÚÒ»¸öµãµÄy×ø±ê
-    p2.y = -(a * p2.x + c) / b; // µÚ¶ş¸öµãµÄy×ø±ê
-    line(img, p1, p2, 255); // »æÖÆÖ±Ïß£¬ÑÕÉ«Îª°×É«
+    Point2d p1, p2; // å®šä¹‰ä¸¤ä¸ªç‚¹
+    p1.x = 0; // ç¬¬ä¸€ä¸ªç‚¹çš„xåæ ‡
+    p2.x = img.cols; // ç¬¬äºŒä¸ªç‚¹çš„xåæ ‡
+    p1.y = -c / b; // ç¬¬ä¸€ä¸ªç‚¹çš„yåæ ‡
+    p2.y = -(a * p2.x + c) / b; // ç¬¬äºŒä¸ªç‚¹çš„yåæ ‡
+    line(img, p1, p2, 255); // ç»˜åˆ¶ç›´çº¿ï¼Œé¢œè‰²ä¸ºç™½è‰²
 }
 
-// ÔÚÍ¼ÏñÉÏ»æÖÆÖ±Ïß£¨Ö¸¶¨ÑÕÉ«ºÍÏß¿í£©
+// åœ¨å›¾åƒä¸Šç»˜åˆ¶ç›´çº¿ï¼ˆæŒ‡å®šé¢œè‰²å’Œçº¿å®½ï¼‰
 static void drawLine(Mat& img, Scalar color, double a, double b, double c, double thickness) {
-    Point2d p1, p2; // ¶¨ÒåÁ½¸öµã
-    p1.x = 0; // µÚÒ»¸öµãµÄx×ø±ê
-    p2.x = img.cols; // µÚ¶ş¸öµãµÄx×ø±ê
-    p1.y = -c / b; // µÚÒ»¸öµãµÄy×ø±ê
-    p2.y = -(a * p2.x + c) / b; // µÚ¶ş¸öµãµÄy×ø±ê
-    line(img, p1, p2, color, thickness); // »æÖÆÖ±Ïß£¬Ö¸¶¨ÑÕÉ«ºÍÏß¿í
+    Point2d p1, p2; // å®šä¹‰ä¸¤ä¸ªç‚¹
+    p1.x = 0; // ç¬¬ä¸€ä¸ªç‚¹çš„xåæ ‡
+    p2.x = img.cols; // ç¬¬äºŒä¸ªç‚¹çš„xåæ ‡
+    p1.y = -c / b; // ç¬¬ä¸€ä¸ªç‚¹çš„yåæ ‡
+    p2.y = -(a * p2.x + c) / b; // ç¬¬äºŒä¸ªç‚¹çš„yåæ ‡
+    line(img, p1, p2, color, thickness); // ç»˜åˆ¶ç›´çº¿ï¼ŒæŒ‡å®šé¢œè‰²å’Œçº¿å®½
 }
 
-// ´ÖÂÔÄâºÏÍ¼ÏñÖĞµÄÄ£ĞÍ
+// ç²—ç•¥æ‹Ÿåˆå›¾åƒä¸­çš„æ¨¡å‹
 void coarseFitting(cv::Mat& img, cv::Vec6d& params) {
-    int ws = 11; // Ä£°å´°¿Ú´óĞ¡
-    Mat scoreMap; // ·ÖÊıÍ¼
-    // »ñÈ¡Ä£°åÍ¼Ïñ
+    int ws = 11; // æ¨¡æ¿çª—å£å¤§å°
+    Mat scoreMap; // åˆ†æ•°å›¾
+    // è·å–æ¨¡æ¿å›¾åƒ
     Mat templ = getTempl(img.size() - Size(ws-1, ws-1), params, ws);
-    Point max_pos; // ×î´óÆ¥ÅäÎ»ÖÃ
-    Point center(ws / 2, ws / 2); // Ä£°åÖĞĞÄ
-    // Æ¥ÅäÄ£°å
+    Point max_pos; // æœ€å¤§åŒ¹é…ä½ç½®
+    Point center(ws / 2, ws / 2); // æ¨¡æ¿ä¸­å¿ƒ
+    // åŒ¹é…æ¨¡æ¿
     matchTemplate(img, templ, scoreMap, TM_CCORR_NORMED);
-    // ÕÒµ½·ÖÊıÍ¼ÖĞµÄ×î´óÖµÎ»ÖÃ
+    // æ‰¾åˆ°åˆ†æ•°å›¾ä¸­çš„æœ€å¤§å€¼ä½ç½®
     minMaxLoc(scoreMap, nullptr, 0, nullptr, &max_pos);
         
-    int dx = (max_pos - Point(ws / 2, ws / 2)).x; // ¼ÆËãx·½ÏòÆ«ÒÆ
-    int dy = (max_pos - Point(ws / 2, ws / 2)).y; // ¼ÆËãy·½ÏòÆ«ÒÆ
-    params[2] += dx; // ¸üĞÂ²ÎÊıx×ø±ê
-    params[3] += dy; // ¸üĞÂ²ÎÊıy×ø±ê
+    int dx = (max_pos - Point(ws / 2, ws / 2)).x; // è®¡ç®—xæ–¹å‘åç§»
+    int dy = (max_pos - Point(ws / 2, ws / 2)).y; // è®¡ç®—yæ–¹å‘åç§»
+    params[2] += dx; // æ›´æ–°å‚æ•°xåæ ‡
+    params[3] += dy; // æ›´æ–°å‚æ•°yåæ ‡
 }
 
-// ´ÖÂÔÄâºÏÍ¼ÏñÖĞµÄÄ£ĞÍ£¨´ø¿ÉÊÓ»¯£©
+// ç²—ç•¥æ‹Ÿåˆå›¾åƒä¸­çš„æ¨¡å‹ï¼ˆå¸¦å¯è§†åŒ–ï¼‰
 void coarseFittingV(cv::Mat& img, cv::Vec6d& params) {
-    int ws = 11; // Ä£°å´°¿Ú´óĞ¡windowsize
-    Mat scoreMap; // ·ÖÊıÍ¼
-    // »ñÈ¡Ä£°åÍ¼Ïñ
+    int ws = 11; // æ¨¡æ¿çª—å£å¤§å°windowsize
+    Mat scoreMap; // åˆ†æ•°å›¾
+    // è·å–æ¨¡æ¿å›¾åƒ
     Mat templ = getTempl(img.size() - Size(ws - 1, ws - 1), params, ws);
-    Mat canva2; // ¿ÉÊÓ»¯Ä£°å
-    resize(templ, canva2, Size(), 30, 30, INTER_NEAREST); // Ëõ·ÅÄ£°å
-    imshow("templ", canva2); // ÏÔÊ¾Ä£°å
-    int key = waitKey(); // µÈ´ı°´¼ü
-    if (key == 's') { // Èç¹û°´¼üÎª's'
-        printf("Please enter the path to save image:\n"); // ÌáÊ¾ÊäÈë±£´æÂ·¾¶
-        std::string p; // ±£´æÂ·¾¶
-        std::cin >> p; // ÊäÈë±£´æÂ·¾¶
-        cv::imwrite(p, canva2); // ±£´æÄ£°åÍ¼Ïñ
+    Mat canva2; // å¯è§†åŒ–æ¨¡æ¿
+    resize(templ, canva2, Size(), 30, 30, INTER_NEAREST); // ç¼©æ”¾æ¨¡æ¿
+    imshow("templ", canva2); // æ˜¾ç¤ºæ¨¡æ¿
+    int key = waitKey(); // ç­‰å¾…æŒ‰é”®
+    if (key == 's') { // å¦‚æœæŒ‰é”®ä¸º's'
+        printf("Please enter the path to save image:\n"); // æç¤ºè¾“å…¥ä¿å­˜è·¯å¾„
+        std::string p; // ä¿å­˜è·¯å¾„
+        std::cin >> p; // è¾“å…¥ä¿å­˜è·¯å¾„
+        cv::imwrite(p, canva2); // ä¿å­˜æ¨¡æ¿å›¾åƒ
     }
-    Point max_pos; // ×î´óÆ¥ÅäÎ»ÖÃ
-    Point center(ws / 2, ws / 2); // Ä£°åÖĞĞÄ
-    // Æ¥ÅäÄ£°å
+    Point max_pos; // æœ€å¤§åŒ¹é…ä½ç½®
+    Point center(ws / 2, ws / 2); // æ¨¡æ¿ä¸­å¿ƒ
+    // åŒ¹é…æ¨¡æ¿
     matchTemplate(img, templ, scoreMap, TM_CCORR_NORMED);
-    Mat canva; // ¿ÉÊÓ»¯·ÖÊıÍ¼
-    scoreMap.convertTo(canva, CV_8U, 255); // ×ª»»·ÖÊıÍ¼Îª8Î»Í¼Ïñ
-    resize(canva, canva, Size(500, 500), 0, 0, INTER_NEAREST); // Ëõ·Å·ÖÊıÍ¼
-    imshow("score", canva); // ÏÔÊ¾·ÖÊıÍ¼
-    key = waitKey(); // µÈ´ı°´¼ü
-    if (key == 's') { // Èç¹û°´¼üÎª's'
-        printf("Please enter the path to save image:\n"); // ÌáÊ¾ÊäÈë±£´æÂ·¾¶
-        std::string p; // ±£´æÂ·¾¶
-        std::cin >> p; // ÊäÈë±£´æÂ·¾¶
-        cv::imwrite(p, canva); // ±£´æ·ÖÊıÍ¼
+    Mat canva; // å¯è§†åŒ–åˆ†æ•°å›¾
+    scoreMap.convertTo(canva, CV_8U, 255); // è½¬æ¢åˆ†æ•°å›¾ä¸º8ä½å›¾åƒ
+    resize(canva, canva, Size(500, 500), 0, 0, INTER_NEAREST); // ç¼©æ”¾åˆ†æ•°å›¾
+    imshow("score", canva); // æ˜¾ç¤ºåˆ†æ•°å›¾
+    key = waitKey(); // ç­‰å¾…æŒ‰é”®
+    if (key == 's') { // å¦‚æœæŒ‰é”®ä¸º's'
+        printf("Please enter the path to save image:\n"); // æç¤ºè¾“å…¥ä¿å­˜è·¯å¾„
+        std::string p; // ä¿å­˜è·¯å¾„
+        std::cin >> p; // è¾“å…¥ä¿å­˜è·¯å¾„
+        cv::imwrite(p, canva); // ä¿å­˜åˆ†æ•°å›¾
     }
-    // ÕÒµ½·ÖÊıÍ¼ÖĞµÄ×î´óÖµÎ»ÖÃ
+    // æ‰¾åˆ°åˆ†æ•°å›¾ä¸­çš„æœ€å¤§å€¼ä½ç½®
     minMaxLoc(scoreMap, nullptr, 0, nullptr, &max_pos);
 
-    int dx = (max_pos - Point(ws / 2, ws / 2)).x; // ¼ÆËãx·½ÏòÆ«ÒÆ
-    int dy = (max_pos - Point(ws / 2, ws / 2)).y; // ¼ÆËãy·½ÏòÆ«ÒÆ
-    params[2] += dx; // ¸üĞÂ²ÎÊıx×ø±ê
-    params[3] += dy; // ¸üĞÂ²ÎÊıy×ø±ê
+    int dx = (max_pos - Point(ws / 2, ws / 2)).x; // è®¡ç®—xæ–¹å‘åç§»
+    int dy = (max_pos - Point(ws / 2, ws / 2)).y; // è®¡ç®—yæ–¹å‘åç§»
+    params[2] += dx; // æ›´æ–°å‚æ•°xåæ ‡
+    params[3] += dy; // æ›´æ–°å‚æ•°yåæ ‡
 }
 
-// ¼ÆËãÍ¼ÏñÌİ¶Èº¯Êı£¬²ÎÊıÎª4Î¬ÏòÁ¿
+// è®¡ç®—å›¾åƒæ¢¯åº¦å‡½æ•°ï¼Œå‚æ•°ä¸º4ç»´å‘é‡
 Vec4d getGrad(Mat& img, Vec4d params, double* err_ptr = nullptr) {
-    // ÌáÈ¡²ÎÊı
+    // æå–å‚æ•°
     double a1 = params[0], a2 = params[1], cx = params[2], cy = params[3];
-    // ³õÊ¼»¯Ìİ¶ÈÏòÁ¿
+    // åˆå§‹åŒ–æ¢¯åº¦å‘é‡
     Vec4d grad(0, 0, 0, 0);
-    // ³õÊ¼»¯Îó²î
+    // åˆå§‹åŒ–è¯¯å·®
     double err = 0;
-    // ±éÀúÍ¼ÏñµÄÃ¿Ò»ĞĞ
+    // éå†å›¾åƒçš„æ¯ä¸€è¡Œ
     for (int i = 0; i < img.rows; i++) {
-        // »ñÈ¡µ±Ç°ĞĞµÄÊı¾İÖ¸Õë
+        // è·å–å½“å‰è¡Œçš„æ•°æ®æŒ‡é’ˆ
         uchar* data = img.ptr<uchar>(i);
-        // ±éÀúµ±Ç°ĞĞµÄÃ¿Ò»ÁĞ
+        // éå†å½“å‰è¡Œçš„æ¯ä¸€åˆ—
         for(int j=0;j<img.cols;j++) {
-            // µ±Ç°ÏñËØµÄ×ø±ê
+            // å½“å‰åƒç´ çš„åæ ‡
             Point2d coord(j, i);
-            // ¼ÆËã·½ÏòÏòÁ¿
+            // è®¡ç®—æ–¹å‘å‘é‡
             Point2d coeff1(cos(a1), sin(a1));
             Point2d coeff2(cos(a2), sin(a2));
-            // ¼ÆËã¾àÀë
+            // è®¡ç®—è·ç¦»
             double l1 = coeff1.cross(coord) - coeff1.cross(Point2d(cx, cy));
             double l2 = coeff2.cross(coord) - coeff2.cross(Point2d(cx, cy));
-            // ¼ÆËãÆ«µ¼Êı
+            // è®¡ç®—åå¯¼æ•°
             double pl1pa1 = Point2d(-sin(a1), cos(a1)).cross(coord) - Point2d(-sin(a1), cos(a1)).cross(Point2d(cx, cy));
             double pl2pa2 = Point2d(-sin(a2), cos(a2)).cross(coord) - Point2d(-sin(a2), cos(a2)).cross(Point2d(cx, cy));
-            // ¼ÆËãÈíãĞÖµº¯Êı¼°Æäµ¼Êı
+            // è®¡ç®—è½¯é˜ˆå€¼å‡½æ•°åŠå…¶å¯¼æ•°
             double g1 = exp(-10 * (l1 + 1.5));
             double g2 = exp(10 * (l1 - 1.5));
             double g3 = exp(-10 * (l2 + 1.5));
@@ -213,57 +213,57 @@ Vec4d getGrad(Mat& img, Vec4d params, double* err_ptr = nullptr) {
             double pf2pl1 = -10 * g2 / ((1 + g2) * (1 + g2));
             double pf3pl2 = 10 * g3 / ((1 + g3) * (1 + g3));
             double pf4pl2 = -10 * g4 / ((1 + g4) * (1 + g4));
-            // ¼ÆËã¸´ºÏº¯ÊıµÄµ¼Êı
+            // è®¡ç®—å¤åˆå‡½æ•°çš„å¯¼æ•°
             double pfpl1 = (1 - f3 * f4) * (f2 * pf1pl1 + f1 * pf2pl1);
             double pfpl2 = (1 - f1 * f2) * (f4 * pf3pl2 + f3 * pf4pl2);
-            // ¼ÆËãÄ£ĞÍº¯ÊıÖµ
+            // è®¡ç®—æ¨¡å‹å‡½æ•°å€¼
             double f = f1 * f2 + f3 * f4 - f1 * f2 * f3 * f4;
-            // ¼ÆËãÎó²î
+            // è®¡ç®—è¯¯å·®
             double D = data[j] / 255 - f;
-            // ¼ÆËãÌİ¶È
+            // è®¡ç®—æ¢¯åº¦
             double pLpa1 = -2 * D * pfpl1 * pl1pa1;
             double pLpa2 = -2 * D * pfpl2 * pl2pa2;
             double pLpcx = -2 * D * (pfpl1 * sin(a1) + pfpl2 * sin(a2));
             double pLpcy = -2 * D * (pfpl1 * (-cos(a1)) + pfpl2 * (-cos(a2)));
-            // ÀÛ¼ÓÌİ¶È
+            // ç´¯åŠ æ¢¯åº¦
             grad += Vec4d(pLpa1, pLpa2, pLpcx, pLpcy);
-            // ÀÛ¼ÓÎó²î
+            // ç´¯åŠ è¯¯å·®
             err = err + D * D;
         }
     }
-    // Èç¹ûÌá¹©ÁËÎó²îÖ¸Õë£¬Ôò¸üĞÂÎó²î
+    // å¦‚æœæä¾›äº†è¯¯å·®æŒ‡é’ˆï¼Œåˆ™æ›´æ–°è¯¯å·®
     if (err_ptr)
         *err_ptr = err;
-    // ·µ»ØÌİ¶È
+    // è¿”å›æ¢¯åº¦
     return grad;
 }
 
-// ¼ÆËãÍ¼ÏñÌİ¶Èº¯Êı£¬²ÎÊıÎª6Î¬ÏòÁ¿
+// è®¡ç®—å›¾åƒæ¢¯åº¦å‡½æ•°ï¼Œå‚æ•°ä¸º6ç»´å‘é‡
 Vec6d getGrad(Mat& img, Vec6d params, double* err_ptr = nullptr) {
-    // ÌáÈ¡²ÎÊı
+    // æå–å‚æ•°
     double a1 = params[0], a2 = params[1], cx = params[2], cy = params[3], b1 = params[4], b2 = params[5];
-    // ³õÊ¼»¯Ìİ¶ÈÏòÁ¿
+    // åˆå§‹åŒ–æ¢¯åº¦å‘é‡
     Vec6d grad(0, 0, 0, 0, 0, 0);
-    // ³õÊ¼»¯Îó²î
+    // åˆå§‹åŒ–è¯¯å·®
     double err = 0;
-    // ±éÀúÍ¼ÏñµÄÃ¿Ò»ĞĞ
+    // éå†å›¾åƒçš„æ¯ä¸€è¡Œ
     for (int i = 0; i < img.rows; i++) {
-        // »ñÈ¡µ±Ç°ĞĞµÄÊı¾İÖ¸Õë
+        // è·å–å½“å‰è¡Œçš„æ•°æ®æŒ‡é’ˆ
         uchar* data = img.ptr<uchar>(i);
-        // ±éÀúµ±Ç°ĞĞµÄÃ¿Ò»ÁĞ
+        // éå†å½“å‰è¡Œçš„æ¯ä¸€åˆ—
         for (int j = 0; j < img.cols; j++) {
-            // µ±Ç°ÏñËØµÄ×ø±ê
+            // å½“å‰åƒç´ çš„åæ ‡
             Point2d coord(j, i);
-            // ¼ÆËã·½ÏòÏòÁ¿
+            // è®¡ç®—æ–¹å‘å‘é‡
             Point2d coeff1(cos(a1), sin(a1));
             Point2d coeff2(cos(a2), sin(a2));
-            // ¼ÆËã¾àÀë
+            // è®¡ç®—è·ç¦»
             double l1 = coeff1.cross(coord) - coeff1.cross(Point2d(cx, cy));
             double l2 = coeff2.cross(coord) - coeff2.cross(Point2d(cx, cy));
-            // ¼ÆËãÆ«µ¼Êı
+            // è®¡ç®—åå¯¼æ•°
             double pl1pa1 = Point2d(-sin(a1), cos(a1)).cross(coord) - Point2d(-sin(a1), cos(a1)).cross(Point2d(cx, cy));
             double pl2pa2 = Point2d(-sin(a2), cos(a2)).cross(coord) - Point2d(-sin(a2), cos(a2)).cross(Point2d(cx, cy));
-            // ¼ÆËãÈíãĞÖµº¯Êı¼°Æäµ¼Êı
+            // è®¡ç®—è½¯é˜ˆå€¼å‡½æ•°åŠå…¶å¯¼æ•°
             double g1 = exp(-10 * (l1 + b1 / 2));
             double g2 = exp(10 * (l1 - b1 / 2));
             double g3 = exp(-10 * (l2 + b2 / 2));
@@ -276,14 +276,14 @@ Vec6d getGrad(Mat& img, Vec6d params, double* err_ptr = nullptr) {
             double pf2pl1 = -10 * g2 / ((1 + g2) * (1 + g2));
             double pf3pl2 = 10 * g3 / ((1 + g3) * (1 + g3));
             double pf4pl2 = -10 * g4 / ((1 + g4) * (1 + g4));
-            // ¼ÆËã¸´ºÏº¯ÊıµÄµ¼Êı
+            // è®¡ç®—å¤åˆå‡½æ•°çš„å¯¼æ•°
             double pfpl1 = (1 - f3 * f4) * (f2 * pf1pl1 + f1 * pf2pl1);
             double pfpl2 = (1 - f1 * f2) * (f4 * pf3pl2 + f3 * pf4pl2);
-            // ¼ÆËãÄ£ĞÍº¯ÊıÖµ
+            // è®¡ç®—æ¨¡å‹å‡½æ•°å€¼
             double f = f1 * f2 + f3 * f4 - f1 * f2 * f3 * f4;
-            // ¼ÆËãÎó²î
+            // è®¡ç®—è¯¯å·®
             double D = data[j] / 255 - f;
-            // ¼ÆËãÌİ¶È
+            // è®¡ç®—æ¢¯åº¦
             double pLpa1 = -2 * D * pfpl1 * pl1pa1;
             double pLpa2 = -2 * D * pfpl2 * pl2pa2;
             double pLpcx = -2 * D * (pfpl1 * sin(a1) + pfpl2 * sin(a2));
@@ -292,16 +292,16 @@ Vec6d getGrad(Mat& img, Vec6d params, double* err_ptr = nullptr) {
                 (f2 * pf1pl1 / 2 - f1 * pf2pl1 / 2);
             double pLpb2 = -2 * D * (1 - f1 * f2) * \
                 (f4 * pf3pl2 / 2 - f3 * pf4pl2 / 2);
-            // ÀÛ¼ÓÌİ¶È
+            // ç´¯åŠ æ¢¯åº¦
             grad += Vec6d(pLpa1, pLpa2, pLpcx, pLpcy, pLpb1, pLpb2);
-            // ÀÛ¼ÓÎó²î
+            // ç´¯åŠ è¯¯å·®
             err = err + D * D;
         }
     }
-    // Èç¹ûÌá¹©ÁËÎó²îÖ¸Õë£¬Ôò¸üĞÂÎó²î
+    // å¦‚æœæä¾›äº†è¯¯å·®æŒ‡é’ˆï¼Œåˆ™æ›´æ–°è¯¯å·®
     if (err_ptr)
         *err_ptr = err;
-    // ·µ»ØÌİ¶È
+    // è¿”å›æ¢¯åº¦
     return grad;
 }
 
@@ -668,96 +668,96 @@ void showFunction(Mat img, Vec6d params) {
 
 }
 
-// º¯Êı£ºshowLines
-// ¹¦ÄÜ£ºÔÚ¸ø¶¨µÄÍ¼ÏñÉÏ»æÖÆÁ½ÌõÖ±ÏßºÍÒ»¸öÔ²µã
-// ²ÎÊı£º
-//   canva - ÓÃÓÚ»æÖÆµÄÍ¼Ïñ
-//   params - °üº¬Ö±ÏßºÍÔ²µã²ÎÊıµÄÏòÁ¿£¬¸ñÊ½Îª[a1, a2, cx, cy, b1, b2]
-//   scale - Ëõ·Å±ÈÀı
-//   color - »æÖÆÑÕÉ«
+// å‡½æ•°ï¼šshowLines
+// åŠŸèƒ½ï¼šåœ¨ç»™å®šçš„å›¾åƒä¸Šç»˜åˆ¶ä¸¤æ¡ç›´çº¿å’Œä¸€ä¸ªåœ†ç‚¹
+// å‚æ•°ï¼š
+//   canva - ç”¨äºç»˜åˆ¶çš„å›¾åƒ
+//   params - åŒ…å«ç›´çº¿å’Œåœ†ç‚¹å‚æ•°çš„å‘é‡ï¼Œæ ¼å¼ä¸º[a1, a2, cx, cy, b1, b2]
+//   scale - ç¼©æ”¾æ¯”ä¾‹
+//   color - ç»˜åˆ¶é¢œè‰²
 void showLines(Mat& canva, Vec6d params, double scale, Scalar color) {
-    // ÌáÈ¡²ÎÊı
+    // æå–å‚æ•°
     double a1 = params[0], a2 = params[1], cx = params[2], cy = params[3], b1 = params[4], b2 = params[5];
     
-    // ½«ÖĞĞÄµã×ø±êµ÷ÕûÎªÍ¼ÏñÖĞĞÄ
+    // å°†ä¸­å¿ƒç‚¹åæ ‡è°ƒæ•´ä¸ºå›¾åƒä¸­å¿ƒ
     cx += 0.5;
     cy += 0.5;
     
-    // ¸ù¾İËõ·Å±ÈÀıµ÷ÕûÖĞĞÄµã×ø±ê
+    // æ ¹æ®ç¼©æ”¾æ¯”ä¾‹è°ƒæ•´ä¸­å¿ƒç‚¹åæ ‡
     cx *= scale;
     cy *= scale;
     
-    // ¼ÆËãµÚÒ»ÌõÖ±ÏßµÄÁ½¸ö¶Ëµã
+    // è®¡ç®—ç¬¬ä¸€æ¡ç›´çº¿çš„ä¸¤ä¸ªç«¯ç‚¹
     Point2d l1p1(max(cx - cy / tan(a1), 0.), max(cy - tan(a1) * cx, 0.)),
            l1p2(min(cx + (canva.rows + 1 - cy) / tan(a1), double(canva.cols)), 
                 min(cy + tan(a1) * (canva.cols + 1 - cx), double(canva.rows)));
                 
-    // ¼ÆËãµÚ¶şÌõÖ±ÏßµÄÁ½¸ö¶Ëµã
+    // è®¡ç®—ç¬¬äºŒæ¡ç›´çº¿çš„ä¸¤ä¸ªç«¯ç‚¹
     Point2d l2p1(max(cx + (canva.rows + 1 - cy) / tan(a2), 0.), 
                  min(cy - tan(a2) * cx, double(canva.rows))),
            l2p2(min(cx - cy / tan(a2), double(canva.cols)), 
                 max(cy + tan(a2) * (canva.cols + 1 - cx), 0.));
                 
-    // »æÖÆµÚÒ»ÌõÖ±Ïß
+    // ç»˜åˆ¶ç¬¬ä¸€æ¡ç›´çº¿
     line(canva, l1p1, l1p2, color, 2);
     
-    // »æÖÆµÚ¶şÌõÖ±Ïß
+    // ç»˜åˆ¶ç¬¬äºŒæ¡ç›´çº¿
     line(canva, l2p1, l2p2, color, 2);
     
-    // »æÖÆÖĞĞÄµã
+    // ç»˜åˆ¶ä¸­å¿ƒç‚¹
     circle(canva, Point(cx, cy), 5, Scalar());
 }
 
-// º¯Êı£ºshowFunction_lines
-// ¹¦ÄÜ£ºÔÚ¸ø¶¨µÄÍ¼ÏñÉÏ»æÖÆÁ½ÌõÖ±ÏßºÍÒ»¸öÔ²µã£¬²¢ÏÔÊ¾½á¹û
-// ²ÎÊı£º
-//   img - ÊäÈëµÄ»Ò¶ÈÍ¼Ïñ
-//   params - °üº¬Ö±ÏßºÍÔ²µã²ÎÊıµÄÏòÁ¿£¬¸ñÊ½Îª[a1, a2, cx, cy, b1, b2]
-//   scale - Ëõ·Å±ÈÀı
+// å‡½æ•°ï¼šshowFunction_lines
+// åŠŸèƒ½ï¼šåœ¨ç»™å®šçš„å›¾åƒä¸Šç»˜åˆ¶ä¸¤æ¡ç›´çº¿å’Œä¸€ä¸ªåœ†ç‚¹ï¼Œå¹¶æ˜¾ç¤ºç»“æœ
+// å‚æ•°ï¼š
+//   img - è¾“å…¥çš„ç°åº¦å›¾åƒ
+//   params - åŒ…å«ç›´çº¿å’Œåœ†ç‚¹å‚æ•°çš„å‘é‡ï¼Œæ ¼å¼ä¸º[a1, a2, cx, cy, b1, b2]
+//   scale - ç¼©æ”¾æ¯”ä¾‹
 void showFunction_lines(Mat img, Vec6d params, double scale) {
-    // ÌáÈ¡²ÎÊı
+    // æå–å‚æ•°
     double a1 = params[0], a2 = params[1], cx = params[2], cy = params[3], b1 = params[4], b2 = params[5];
     
-    // ´´½¨ÓÃÓÚ»æÖÆµÄÍ¼Ïñ
+    // åˆ›å»ºç”¨äºç»˜åˆ¶çš„å›¾åƒ
     Mat canva;
     
-    // ½«»Ò¶ÈÍ¼Ïñ×ª»»Îª²ÊÉ«Í¼Ïñ
+    // å°†ç°åº¦å›¾åƒè½¬æ¢ä¸ºå½©è‰²å›¾åƒ
     cvtColor(img, canva, COLOR_GRAY2BGR);
     
-    // ¸ù¾İËõ·Å±ÈÀıµ÷ÕûÍ¼Ïñ´óĞ¡
+    // æ ¹æ®ç¼©æ”¾æ¯”ä¾‹è°ƒæ•´å›¾åƒå¤§å°
     resize(canva, canva, Size(), scale, scale, INTER_NEAREST);
     
-    // µ÷ÕûÖĞĞÄµã×ø±ê
+    // è°ƒæ•´ä¸­å¿ƒç‚¹åæ ‡
     cx += 0.5;
     cy += 0.5;
     cx *= scale;
     cy *= scale;
     
-    // µ÷ÕûÆ«ÒÆÁ¿
+    // è°ƒæ•´åç§»é‡
     b1 *= scale;
     b2 *= scale;
     
-    // »æÖÆµÚÒ»ÌõÖ±ÏßµÄÁ½ÌõÆ½ĞĞÏß
+    // ç»˜åˆ¶ç¬¬ä¸€æ¡ç›´çº¿çš„ä¸¤æ¡å¹³è¡Œçº¿
     drawLine(canva, Scalar(255, 0, 0), -sin(a1), cos(a1), cx * sin(a1) - cy * cos(a1), 3);
     drawLine(canva, Scalar(255, 0, 0), -sin(a1), cos(a1), cx * sin(a1) - cy * cos(a1) + b1 / 2, 3);
     drawLine(canva, Scalar(255, 0, 0), -sin(a1), cos(a1), cx * sin(a1) - cy * cos(a1) - b1 / 2, 3);
     
-    // »æÖÆµÚ¶şÌõÖ±ÏßµÄÁ½ÌõÆ½ĞĞÏß
+    // ç»˜åˆ¶ç¬¬äºŒæ¡ç›´çº¿çš„ä¸¤æ¡å¹³è¡Œçº¿
     drawLine(canva, Scalar(255, 0, 0), -sin(a2), cos(a2), cx * sin(a2) - cy * cos(a2), 3);
     drawLine(canva, Scalar(255, 0, 0), -sin(a2), cos(a2), cx * sin(a2) - cy * cos(a2) + b2 / 2, 3);
     drawLine(canva, Scalar(255, 0, 0), -sin(a2), cos(a2), cx * sin(a2) - cy * cos(a2) - b2 / 2, 3);
     
-    // »æÖÆÖĞĞÄµã
+    // ç»˜åˆ¶ä¸­å¿ƒç‚¹
     circle(canva, Point(cx, cy), 5, Scalar());
     
-    // ´´½¨´°¿Ú²¢ÏÔÊ¾½á¹û
+    // åˆ›å»ºçª—å£å¹¶æ˜¾ç¤ºç»“æœ
     namedWindow("fitting result", WINDOW_NORMAL);
     imshow("fitting result", canva);
     
-    // µÈ´ı°´¼ü
+    // ç­‰å¾…æŒ‰é”®
     int key = waitKey();
     
-    // Èç¹û°´ÏÂ's'¼ü£¬±£´æÍ¼Ïñ
+    // å¦‚æœæŒ‰ä¸‹'s'é”®ï¼Œä¿å­˜å›¾åƒ
     if (key == 's') {
         string filename;
         cout << "Please input the file name:\n";
