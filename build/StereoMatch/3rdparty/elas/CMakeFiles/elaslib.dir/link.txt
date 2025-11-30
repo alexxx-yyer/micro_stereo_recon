@@ -1,2 +1,0 @@
-/usr/bin/ar qc libelaslib.a CMakeFiles/elaslib.dir/descriptor.cpp.o CMakeFiles/elaslib.dir/elas.cpp.o CMakeFiles/elaslib.dir/elasLib.cpp.o CMakeFiles/elaslib.dir/filter.cpp.o CMakeFiles/elaslib.dir/matrix.cpp.o CMakeFiles/elaslib.dir/triangle.cpp.o
-/usr/bin/ranlib libelaslib.a
